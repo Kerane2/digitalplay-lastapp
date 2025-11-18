@@ -42,35 +42,36 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-accent/5 to-background px-4 animate-fade-in">
-      <Card className="w-full max-w-md shadow-2xl border-2 animate-fade-in-scale">
-        <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-4xl font-bold">Connexion</CardTitle>
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <Card className="w-full max-w-md shadow-2xl border-2">
+        <CardHeader className="text-center space-y-2 pb-8">
+          <CardTitle className="text-3xl font-bold">Connexion Admin</CardTitle>
           <CardDescription className="text-base">
-            Connectez-vous à votre compte Digital Play
+            Connectez-vous pour accéder au panneau d'administration
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-5">
             {error && (
-              <div className="p-3 text-sm text-destructive-foreground bg-destructive/10 border border-destructive/20 rounded-lg">
+              <div className="p-4 text-sm text-destructive-foreground bg-destructive/10 border border-destructive/20 rounded-xl">
                 {error}
               </div>
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-base">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="votre@email.com"
+                placeholder="admin@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="h-12 text-base"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Mot de passe</Label>
+              <Label htmlFor="password" className="text-base">Mot de passe</Label>
               <Input
                 id="password"
                 type="password"
@@ -78,17 +79,18 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="h-12 text-base"
               />
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={loading}>
+          <CardFooter className="flex flex-col gap-4 pt-6">
+            <Button type="submit" className="w-full h-12 text-base font-semibold" disabled={loading}>
               {loading ? 'Connexion...' : 'Se connecter'}
             </Button>
             <p className="text-sm text-center text-muted-foreground">
               Pas encore de compte?{' '}
-              <Link href="/register" className="text-primary hover:underline">
-                Créer un compte
+              <Link href="/register" className="text-primary hover:underline font-semibold">
+                S'inscrire
               </Link>
             </p>
           </CardFooter>

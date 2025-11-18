@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { formatPrice } from '@/lib/format';
 import { Product } from '@/lib/mock-data';
-import { ShoppingCart, Zap, Play } from 'lucide-react';
-import { useState } from 'react';
+import { ShoppingCart, Clock } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -13,100 +12,51 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onAddToCart }: ProductCardProps) {
-  const [isHovering, setIsHovering] = useState(false);
-
   return (
-    <Card className="group overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-border/50">
+    <Card className="group overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 border-border/50 bg-card">
       <Link href={`/products/${product.slug}`}>
-        <div 
-          className="aspect-[3/2] overflow-hidden bg-gradient-to-br from-primary/5 to-accent/5 relative"
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
-        >
+        <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/5 to-accent/5 relative">
           {product.is_featured && (
-            <Badge className="absolute top-3 left-3 bg-accent text-accent-foreground gap-1 shadow-lg z-10 animate-pulse-glow">
-              <Zap className="h-3 w-3" />
+            <Badge className="absolute top-3 right-3 bg-primary text-primary-foreground px-3 py-1 shadow-lg z-10 font-semibold text-xs">
               Populaire
             </Badge>
           )}
           
-          {product.video_url ? (
-            <>
-              {isHovering ? (
-                <video
-                  src={product.video_url}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="h-full w-full object-cover transition-opacity duration-300"
-                />
-              ) : (
-                <div className="relative h-full w-full">
-                  <img
-                    src={product.image_url || "/placeholder.svg"}
-                    alt={product.name}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm">
-                      <Play className="h-6 w-6 text-primary ml-0.5" />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            <img
-              src={product.image_url || "/placeholder.svg"}
-              alt={product.name}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-            />
-          )}
+          <img
+            src={product.image_url || "/placeholder.svg"}
+            alt={product.name}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
         </div>
       </Link>
-      <CardContent className="p-4 md:p-5">
+      <CardContent className="p-4">
         <Link href={`/products/${product.slug}`}>
-          <div className="flex flex-wrap gap-1.5 md:gap-2 mb-2 md:mb-3">
-            {product.platform && (
-              <Badge variant="secondary" className="text-[10px] md:text-xs font-medium">
-                {product.platform}
-              </Badge>
-            )}
-            {product.region && (
-              <Badge variant="outline" className="text-[10px] md:text-xs">
-                {product.region}
-              </Badge>
-            )}
-          </div>
-          <h3 className="font-bold text-base md:text-lg leading-tight line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+          <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-primary transition-colors line-clamp-2">
             {product.name}
           </h3>
         </Link>
-        <p className="text-xs md:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-          {product.description}
-        </p>
-      </CardContent>
-      <CardFooter className="p-4 md:p-5 pt-0 flex items-center justify-between gap-2 md:gap-3">
-        <div className="flex flex-col">
-          <p className="text-xl md:text-2xl font-bold text-primary">{formatPrice(product.price)}</p>
-          <p className="text-[10px] md:text-xs text-muted-foreground">
-            {product.stock > 0 ? (
-              <span className="text-success font-medium">En stock</span>
-            ) : (
-              <span className="text-destructive">Rupture</span>
-            )}
-          </p>
+        
+        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+          <Clock className="h-3 w-3" />
+          <span>5-10 minutes</span>
         </div>
+
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-2xl font-bold text-primary">{formatPrice(product.price)}</p>
+          {product.stock > 0 && (
+            <Badge variant="secondary" className="bg-green-500/10 text-green-600 border-green-500/20 font-medium">
+              En stock ({product.stock})
+            </Badge>
+          )}
+        </div>
+      </CardContent>
+      <CardFooter className="p-4 pt-0">
         <Button
-          size="sm"
           onClick={() => onAddToCart?.(product)}
           disabled={product.stock === 0}
-          className="gap-1.5 md:gap-2 shadow-md hover:shadow-lg hover:scale-105 transition-all h-9 md:h-auto text-xs md:text-sm"
+          className="w-full gap-2 shadow-md hover:shadow-xl hover:scale-105 transition-all font-semibold h-11"
         >
-          <ShoppingCart className="h-3 w-3 md:h-4 md:w-4" />
-          <span className="hidden sm:inline">Ajouter</span>
-          <span className="sm:hidden">+</span>
+          Voir
         </Button>
       </CardFooter>
     </Card>

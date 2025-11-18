@@ -35,9 +35,9 @@ export const mockProducts = [
   {
     id: 'str-001',
     category_id: '11111111-1111-1111-1111-111111111111',
-    name: 'Netflix',
-    slug: 'netflix',
-    description: 'Abonnement Netflix pour profiter de milliers de films et séries en streaming.',
+    name: 'Netflix Premium',
+    slug: 'netflix-premium-1-mois', // Updated slug to match expected URL
+    description: 'Abonnement Netflix Premium 1 mois pour profiter de milliers de films et séries en streaming Ultra HD.',
     price: 8000,
     stock: 100,
     platform: 'Streaming',
@@ -50,8 +50,8 @@ export const mockProducts = [
     id: 'str-002',
     category_id: '11111111-1111-1111-1111-111111111111',
     name: 'Amazon Prime Video',
-    slug: 'amazon-prime-video',
-    description: 'Accès illimité aux films et séries Amazon Prime Video.',
+    slug: 'amazon-prime-video-1-mois', // Updated slug
+    description: 'Accès illimité aux films et séries Amazon Prime Video pendant 1 mois.',
     price: 7000,
     stock: 100,
     platform: 'Streaming',
@@ -63,9 +63,9 @@ export const mockProducts = [
   {
     id: 'str-003',
     category_id: '11111111-1111-1111-1111-111111111111',
-    name: 'Disney+',
-    slug: 'disney-plus',
-    description: 'Tout l\'univers Disney, Pixar, Marvel, Star Wars et National Geographic.',
+    name: 'Disney+ Premium',
+    slug: 'disney-plus-1-mois', // Updated slug
+    description: 'Tout l\'univers Disney, Pixar, Marvel, Star Wars et National Geographic pendant 1 mois.',
     price: 7500,
     stock: 100,
     platform: 'Streaming',
@@ -77,9 +77,9 @@ export const mockProducts = [
   {
     id: 'str-004',
     category_id: '11111111-1111-1111-1111-111111111111',
-    name: 'Apple TV+',
-    slug: 'apple-tv-plus',
-    description: 'Séries et films originaux Apple en streaming illimité.',
+    name: 'Apple TV+ Premium',
+    slug: 'apple-tv-plus-1-mois', // Updated slug
+    description: 'Séries et films originaux Apple en streaming illimité pendant 1 mois.',
     price: 6000,
     stock: 100,
     platform: 'Streaming',
@@ -91,9 +91,9 @@ export const mockProducts = [
   {
     id: 'str-005',
     category_id: '11111111-1111-1111-1111-111111111111',
-    name: 'Crunchyroll',
-    slug: 'crunchyroll',
-    description: 'La plateforme ultime pour les animés japonais en streaming.',
+    name: 'Crunchyroll Premium',
+    slug: 'crunchyroll-1-mois', // Updated slug
+    description: 'La plateforme ultime pour les animés japonais en streaming pendant 1 mois.',
     price: 5500,
     stock: 100,
     platform: 'Streaming',
@@ -105,9 +105,9 @@ export const mockProducts = [
   {
     id: 'str-006',
     category_id: '11111111-1111-1111-1111-111111111111',
-    name: 'Spotify',
-    slug: 'spotify',
-    description: 'Millions de chansons et podcasts sans publicité avec Spotify Premium.',
+    name: 'Spotify Premium',
+    slug: 'spotify-premium-1-mois', // Updated slug
+    description: 'Millions de chansons et podcasts sans publicité avec Spotify Premium pendant 1 mois.',
     price: 5000,
     stock: 100,
     platform: 'Streaming',
@@ -276,7 +276,7 @@ export const mockProducts = [
     id: 'gc-001',
     category_id: '22222222-2222-2222-2222-222222222222',
     name: 'PlayStation',
-    slug: 'playstation-card',
+    slug: 'playstation-10', // Updated slug to match expected URL format
     description: 'Carte cadeau PlayStation Store pour acheter jeux et contenus.',
     price: 10000,
     stock: 200,
@@ -290,7 +290,7 @@ export const mockProducts = [
     id: 'gc-002',
     category_id: '22222222-2222-2222-2222-222222222222',
     name: 'Xbox',
-    slug: 'xbox-card',
+    slug: 'xbox-15', // Updated slug to match expected URL format
     description: 'Carte cadeau Xbox pour le Microsoft Store et Game Pass.',
     price: 10000,
     stock: 200,
@@ -460,7 +460,7 @@ export const mockProducts = [
     id: 'mg-001',
     category_id: '33333333-3333-3333-3333-333333333333',
     name: 'COD Mobile (CP)',
-    slug: 'cod-mobile-cp',
+    slug: 'cod-mobile-1100-cp', // Updated slug to match expected URL
     description: 'COD Points pour Call of Duty Mobile.',
     price: 5000,
     stock: 200,
@@ -474,7 +474,7 @@ export const mockProducts = [
     id: 'mg-002',
     category_id: '33333333-3333-3333-3333-333333333333',
     name: 'PUBG Mobile (UC)',
-    slug: 'pubg-mobile-uc',
+    slug: 'pubg-660-uc', // Updated slug to match expected URL
     description: 'Unknown Cash (UC) pour PUBG Mobile.',
     price: 5000,
     stock: 200,
@@ -488,7 +488,7 @@ export const mockProducts = [
     id: 'mg-003',
     category_id: '33333333-3333-3333-3333-333333333333',
     name: 'Free Fire (Diamonds)',
-    slug: 'free-fire-diamonds',
+    slug: 'free-fire-1080', // Updated slug to match expected URL
     description: 'Diamants pour Free Fire.',
     price: 5000,
     stock: 250,
@@ -502,7 +502,7 @@ export const mockProducts = [
     id: 'mg-004',
     category_id: '33333333-3333-3333-3333-333333333333',
     name: 'Mobile Legends (Diamonds)',
-    slug: 'mobile-legends-diamonds',
+    slug: 'ml-706-diamonds', // Updated slug to match expected URL
     description: 'Diamants pour Mobile Legends Bang Bang.',
     price: 5000,
     stock: 200,
@@ -652,6 +652,13 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/ps4-controller.jpg',
+    gallery_images: [
+      '/ps4-controller.jpg',
+      '/ps4-controller-front.jpg',
+      '/ps4-controller-back.jpg',
+      '/ps4-controller-side.jpg',
+    ],
+    video_url: '/videos/ps4-controller-demo.mp4',
     is_featured: true,
   },
   {
@@ -666,6 +673,13 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/ps5-controller.jpg',
+    gallery_images: [
+      '/ps5-controller.jpg',
+      '/ps5-controller-white.jpg',
+      '/ps5-controller-black.jpg',
+      '/ps5-controller-blue.jpg',
+    ],
+    video_url: '/videos/ps5-controller-demo.mp4',
     is_featured: true,
   },
   {
@@ -680,6 +694,13 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/dualsense-controller.png',
+    gallery_images: [
+      '/dualsense-controller.png',
+      '/dualsense-white.png',
+      '/dualsense-cosmic-red.png',
+      '/dualsense-midnight-black.png',
+    ],
+    video_url: '/videos/dualsense-demo.mp4',
     is_featured: true,
   },
   {
@@ -694,6 +715,13 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/xbox-controller.jpg',
+    gallery_images: [
+      '/xbox-controller.jpg',
+      '/xbox-controller-carbon.jpg',
+      '/xbox-controller-shock-blue.jpg',
+      '/xbox-controller-robot-white.jpg',
+    ],
+    video_url: '/videos/xbox-controller-demo.mp4',
     is_featured: true,
   },
   {
@@ -708,6 +736,13 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/mobile-controller.jpg',
+    gallery_images: [
+      '/mobile-controller.jpg',
+      '/mobile-controller-extended.jpg',
+      '/mobile-controller-with-phone.jpg',
+      '/mobile-controller-close-up.jpg',
+    ],
+    video_url: '/videos/mobile-controller-demo.mp4',
     is_featured: false,
   },
   {
@@ -722,6 +757,13 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/mechanical-keyboard.jpg',
+    gallery_images: [
+      '/mechanical-keyboard.jpg',
+      '/mechanical-keyboard-rgb.jpg',
+      '/mechanical-keyboard-side.jpg',
+      '/mechanical-keyboard-keys.jpg',
+    ],
+    video_url: '/videos/keyboard-demo.mp4',
     is_featured: false,
   },
   {
@@ -736,6 +778,13 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/gaming-mouse.jpg',
+    gallery_images: [
+      '/gaming-mouse.jpg',
+      '/gaming-mouse-rgb.jpg',
+      '/gaming-mouse-side.jpg',
+      '/gaming-mouse-buttons.jpg',
+    ],
+    video_url: '/videos/mouse-demo.mp4',
     is_featured: false,
   },
   {
@@ -750,6 +799,12 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/xl-mousepad.jpg',
+    gallery_images: [
+      '/xl-mousepad.jpg',
+      '/xl-mousepad-on-desk.jpg',
+      '/xl-mousepad-texture.jpg',
+      '/xl-mousepad-edge.jpg',
+    ],
     is_featured: false,
   },
   {
@@ -764,6 +819,13 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/gaming-headset.jpg',
+    gallery_images: [
+      '/gaming-headset.jpg',
+      '/gaming-headset-side.jpg',
+      '/gaming-headset-microphone.jpg',
+      '/gaming-headset-rgb.jpg',
+    ],
+    video_url: '/videos/headset-demo.mp4',
     is_featured: true,
   },
   {
@@ -778,6 +840,13 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/microphone.jpg',
+    gallery_images: [
+      '/microphone.jpg',
+      '/microphone-angle.jpg',
+      '/microphone-on-stand.jpg',
+      '/microphone-close-up.jpg',
+    ],
+    video_url: '/videos/microphone-demo.mp4',
     is_featured: false,
   },
   {
@@ -792,6 +861,13 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/webcam.jpg',
+    gallery_images: [
+      '/webcam.jpg',
+      '/webcam-front.jpg',
+      '/webcam-mounted.jpg',
+      '/webcam-lens.jpg',
+    ],
+    video_url: '/videos/webcam-demo.mp4',
     is_featured: false,
   },
   {
@@ -806,6 +882,12 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/finger-sleeves.jpg',
+    gallery_images: [
+      '/finger-sleeves.jpg',
+      '/finger-sleeves-pack.jpg',
+      '/finger-sleeves-hand.jpg',
+      '/finger-sleeves-colors.jpg',
+    ],
     is_featured: false,
   },
   {
@@ -820,6 +902,13 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/phone-cooler.jpg',
+    gallery_images: [
+      '/phone-cooler.jpg',
+      '/phone-cooler-attached.jpg',
+      '/phone-cooler-fan.jpg',
+      '/phone-cooler-rgb.jpg',
+    ],
+    video_url: '/videos/phone-cooler-demo.mp4',
     is_featured: false,
   },
   {
@@ -834,6 +923,13 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/l1-r1-triggers.jpg',
+    gallery_images: [
+      '/l1-r1-triggers.jpg',
+      '/l1-r1-triggers-on-phone.jpg',
+      '/l1-r1-triggers-close-up.jpg',
+      '/l1-r1-triggers-transparent.jpg',
+    ],
+    video_url: '/videos/triggers-demo.mp4',
     is_featured: false,
   },
   {
@@ -848,6 +944,12 @@ export const mockProducts = [
     region: 'Global',
     type: 'physical',
     image_url: '/powerbank.jpg',
+    gallery_images: [
+      '/powerbank.jpg',
+      '/powerbank-ports.jpg',
+      '/powerbank-charging.jpg',
+      '/powerbank-led.jpg',
+    ],
     is_featured: false,
   },
 ];
