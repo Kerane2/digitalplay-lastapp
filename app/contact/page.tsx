@@ -13,22 +13,21 @@ export default function ContactPage() {
       <Header />
       
       <main className="flex-1">
-        <div className="border-b border-border bg-muted/30">
-          <div className="container py-16">
-            <h1 className="font-serif text-5xl font-bold mb-4 text-balance text-center">
+        <div className="bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 border-b animate-fade-in">
+          <div className="container mx-auto py-16 md:py-20 px-4">
+            <h1 className="font-serif text-4xl md:text-6xl font-bold mb-4 text-balance text-center animate-slide-up">
               Contactez-nous
             </h1>
-            <p className="text-lg text-muted-foreground text-center max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-muted-foreground text-center max-w-2xl mx-auto leading-relaxed animate-slide-up" style={{ animationDelay: '0.1s' }}>
               Une question? Notre équipe est là pour vous aider
             </p>
           </div>
         </div>
 
-        <div className="container py-16">
+        <div className="container mx-auto py-12 md:py-16 px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Contact Info */}
             <div className="space-y-6">
-              <Card>
+              <Card className="animate-fade-in-scale hover:shadow-lg transition-all">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 flex-shrink-0">
@@ -42,7 +41,7 @@ export default function ContactPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="animate-fade-in-scale hover:shadow-lg transition-all" style={{ animationDelay: '0.1s' }}>
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 flex-shrink-0">
@@ -56,7 +55,7 @@ export default function ContactPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="animate-fade-in-scale hover:shadow-lg transition-all" style={{ animationDelay: '0.2s' }}>
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 flex-shrink-0">
@@ -73,11 +72,10 @@ export default function ContactPage() {
               </Card>
             </div>
 
-            {/* Contact Form */}
             <div className="lg:col-span-2">
-              <Card>
+              <Card className="animate-fade-in-scale" style={{ animationDelay: '0.3s' }}>
                 <CardHeader>
-                  <CardTitle>Envoyez-nous un message</CardTitle>
+                  <CardTitle className="font-semibold">Envoyez-nous un message</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <form className="space-y-4">

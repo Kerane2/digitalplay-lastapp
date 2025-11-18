@@ -1,10 +1,12 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { ProductCard } from '@/components/product-card';
-import { mockProducts, mockCategories, Product } from '@/lib/mock-data';
+import { getAllProducts, getAllCategories, initializeData } from '@/lib/products-manager';
+import { Product } from '@/lib/mock-data';
 import { addToCart } from '@/lib/cart';
 import { useToast } from '@/hooks/use-toast';
 
@@ -15,14 +17,22 @@ interface PageProps {
 export default function CategoryPage({ params }: PageProps) {
   const { slug } = params;
   const { toast } = useToast();
+  const [categories, setCategories] = useState(getAllCategories());
+  const [products, setProducts] = useState(getAllProducts());
   
-  const category = mockCategories.find((c) => c.slug === slug);
+  useEffect(() => {
+    initializeData();
+    setCategories(getAllCategories());
+    setProducts(getAllProducts());
+  }, []);
+
+  const category = categories.find((c) => c.slug === slug);
 
   if (!category) {
     notFound();
   }
 
-  const categoryProducts = mockProducts.filter((p) => p.category_id === category.id);
+  const categoryProducts = products.filter((p) => p.category_id === category.id);
 
   const handleAddToCart = (product: Product) => {
     addToCart(product);
@@ -33,23 +43,23 @@ export default function CategoryPage({ params }: PageProps) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col font-sans">
       <Header />
       
       <main className="flex-1">
-        <div className="border-b border-border bg-muted/30">
-          <div className="container py-8">
-            <h1 className="font-serif text-4xl font-bold mb-2">{category.name}</h1>
-            <p className="text-muted-foreground mb-4">{category.description}</p>
-            <p className="text-sm text-muted-foreground">
+        <div className="bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 border-b animate-fade-in">
+          <div className="container mx-auto py-16 md:py-20 px-4">
+            <h1 className="font-serif text-4xl md:text-6xl font-bold mb-4 animate-slide-up">{category.name}</h1>
+            <p className="text-xl text-muted-foreground mb-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>{category.description}</p>
+            <p className="text-lg text-muted-foreground animate-slide-up" style={{ animationDelay: '0.2s' }}>
               {categoryProducts.length} produit{categoryProducts.length > 1 ? 's' : ''} disponible{categoryProducts.length > 1 ? 's' : ''}
             </p>
           </div>
         </div>
 
-        <div className="container py-8">
+        <div className="container mx-auto py-12 md:py-16 px-4">
           {categoryProducts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {categoryProducts.map((product) => (
                 <ProductCard
                   key={product.id}

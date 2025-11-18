@@ -51,18 +51,17 @@ export default function AdminDashboard() {
       <Header />
       
       <main className="flex-1">
-        <div className="border-b border-border bg-muted/30">
-          <div className="container py-8">
-            <h1 className="font-serif text-4xl font-bold mb-2">Dashboard Admin</h1>
-            <p className="text-muted-foreground">
+        <div className="bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 border-b animate-fade-in">
+          <div className="container mx-auto py-12 md:py-16 px-4">
+            <h1 className="font-sans text-4xl md:text-6xl font-bold mb-3 animate-slide-up">Dashboard Admin</h1>
+            <p className="text-xl text-muted-foreground animate-slide-up" style={{ animationDelay: '0.1s' }}>
               Vue d'ensemble de votre boutique
             </p>
           </div>
         </div>
 
-        <div className="container py-8 space-y-8">
-          {/* Quick Actions */}
-          <div className="flex flex-wrap gap-4">
+        <div className="container mx-auto py-12 md:py-16 px-4 space-y-8">
+          <div className="flex flex-wrap gap-4 animate-fade-in-scale">
             <Button asChild>
               <Link href="/admin/products">Gérer les produits</Link>
             </Button>
@@ -74,9 +73,8 @@ export default function AdminDashboard() {
             </Button>
           </div>
 
-          {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="animate-fade-in-scale hover:shadow-lg transition-all">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Revenu total
@@ -92,7 +90,7 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="animate-fade-in-scale hover:shadow-lg transition-all" style={{ animationDelay: '0.1s' }}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Commandes
@@ -107,7 +105,7 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="animate-fade-in-scale hover:shadow-lg transition-all" style={{ animationDelay: '0.2s' }}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Produits
@@ -122,7 +120,7 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="animate-fade-in-scale hover:shadow-lg transition-all" style={{ animationDelay: '0.3s' }}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Catégories
@@ -138,11 +136,10 @@ export default function AdminDashboard() {
             </Card>
           </div>
 
-          {/* Recent Orders */}
-          <Card>
+          <Card className="animate-fade-in-scale" style={{ animationDelay: '0.4s' }}>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Commandes récentes</CardTitle>
+                <CardTitle className="font-semibold">Commandes récentes</CardTitle>
                 <Button variant="ghost" size="sm" asChild>
                   <Link href="/admin/orders">Voir tout</Link>
                 </Button>
@@ -177,7 +174,7 @@ export default function AdminDashboard() {
 
           {/* Low Stock Alert */}
           {stats.lowStock > 0 && (
-            <Card className="bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-900">
+            <Card className="bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-900 animate-fade-in-scale" style={{ animationDelay: '0.5s' }}>
               <CardHeader>
                 <CardTitle className="text-yellow-900 dark:text-yellow-100">
                   Alerte stock faible

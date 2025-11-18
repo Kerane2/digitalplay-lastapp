@@ -35,17 +35,17 @@ export default function ProfilePage() {
       <Header />
       
       <main className="flex-1">
-        <div className="border-b border-border bg-muted/30">
-          <div className="container py-8">
-            <h1 className="font-serif text-4xl font-bold mb-2">Mon profil</h1>
-            <p className="text-muted-foreground">
+        <div className="bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 border-b animate-fade-in">
+          <div className="container mx-auto py-12 md:py-16 px-4">
+            <h1 className="text-4xl md:text-6xl font-bold mb-3 animate-slide-up">Mon profil</h1>
+            <p className="text-xl text-muted-foreground animate-slide-up" style={{ animationDelay: '0.1s' }}>
               Gérez vos informations personnelles
             </p>
           </div>
         </div>
 
-        <div className="container py-8">
-          <div className="max-w-2xl mx-auto">
+        <div className="container mx-auto py-12 md:py-16 px-4">
+          <div className="max-w-2xl mx-auto animate-fade-in-scale">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">

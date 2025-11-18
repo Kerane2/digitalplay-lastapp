@@ -54,16 +54,16 @@ export default function OrdersPage() {
       <Header />
       
       <main className="flex-1">
-        <div className="border-b border-border bg-muted/30">
-          <div className="container py-8">
-            <h1 className="font-serif text-4xl font-bold mb-2">Mes commandes</h1>
-            <p className="text-muted-foreground">
+        <div className="bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 border-b animate-fade-in">
+          <div className="container mx-auto py-12 md:py-16 px-4">
+            <h1 className="text-4xl md:text-6xl font-bold mb-3 animate-slide-up">Mes commandes</h1>
+            <p className="text-xl text-muted-foreground animate-slide-up" style={{ animationDelay: '0.1s' }}>
               Historique de vos achats
             </p>
           </div>
         </div>
 
-        <div className="container py-8">
+        <div className="container mx-auto py-12 md:py-16 px-4">
           {mockOrders.length > 0 ? (
             <div className="space-y-4">
               {mockOrders.map((order) => (
@@ -112,13 +112,15 @@ export default function OrdersPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16">
-              <Package className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-              <h2 className="font-serif text-3xl font-bold mb-2">Aucune commande</h2>
-              <p className="text-muted-foreground mb-6">
+            <div className="text-center py-20 animate-fade-in-scale">
+              <div className="inline-flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-primary/10 to-accent/10 mb-6">
+                <Package className="h-12 w-12 text-primary" />
+              </div>
+              <h2 className="text-4xl font-bold mb-3">Aucune commande</h2>
+              <p className="text-lg text-muted-foreground mb-8">
                 Vous n'avez pas encore passé de commande
               </p>
-              <Button asChild>
+              <Button asChild size="lg" className="shadow-lg hover:shadow-xl transition-all">
                 <Link href="/products">Découvrir nos produits</Link>
               </Button>
             </div>

@@ -1,13 +1,9 @@
-'use client';
-
-// Mock authentication for development
-// Replace with real auth when Supabase or another auth provider is connected
-
 export interface User {
   id: string;
   email: string;
   full_name: string;
   role: 'customer' | 'admin';
+  image?: string;
 }
 
 const MOCK_USERS = [
@@ -27,6 +23,7 @@ const MOCK_USERS = [
   },
 ];
 
+// Client-side authentication
 export function getCurrentUser(): User | null {
   if (typeof window === 'undefined') return null;
   const userStr = localStorage.getItem('current_user');
@@ -47,8 +44,23 @@ export function login(email: string, password: string): { success: boolean; user
   return { success: true, user: userWithoutPassword };
 }
 
+export function loginWithGoogle(): { success: boolean; user?: User } {
+  // Mock Google login for preview
+  const googleUser: User = {
+    id: Math.random().toString(36).substring(7),
+    email: 'user@gmail.com',
+    full_name: 'Google User',
+    role: 'customer',
+    image: '/diverse-user-avatars.png',
+  };
+
+  localStorage.setItem('current_user', JSON.stringify(googleUser));
+  window.dispatchEvent(new Event('auth-changed'));
+  
+  return { success: true, user: googleUser };
+}
+
 export function register(email: string, password: string, fullName: string): { success: boolean; user?: User; error?: string } {
-  // Check if user already exists
   if (MOCK_USERS.find((u) => u.email === email)) {
     return { success: false, error: 'Cet email est déjà utilisé' };
   }
@@ -60,7 +72,6 @@ export function register(email: string, password: string, fullName: string): { s
     role: 'customer',
   };
 
-  // In production, this would save to database
   localStorage.setItem('current_user', JSON.stringify(newUser));
   window.dispatchEvent(new Event('auth-changed'));
   

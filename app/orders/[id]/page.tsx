@@ -55,26 +55,24 @@ export default function OrderDetailPage({ params }: PageProps) {
       <Header />
       
       <main className="flex-1">
-        <div className="border-b border-border bg-muted/30">
-          <div className="container py-8">
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="font-serif text-4xl font-bold">Commande #{order.id}</h1>
+        <div className="bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 border-b animate-fade-in">
+          <div className="container mx-auto py-12 md:py-16 px-4">
+            <div className="flex flex-wrap items-center gap-3 mb-2 animate-slide-up">
+              <h1 className="font-serif text-3xl md:text-5xl font-bold">Commande #{order.id}</h1>
               <Badge variant="default" className="h-6">
                 Complétée
               </Badge>
             </div>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground animate-slide-up" style={{ animationDelay: '0.1s' }}>
               Passée le {formatDate(order.date)}
             </p>
           </div>
         </div>
 
-        <div className="container py-8">
+        <div className="container mx-auto py-12 md:py-16 px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Order Details */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Success Message */}
-              <Card className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
+              <Card className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900 animate-fade-in-scale">
                 <CardContent className="p-6">
                   <div className="flex gap-4">
                     <CheckCircle2 className="h-6 w-6 text-green-600 dark:text-green-400 flex-shrink-0" />
@@ -90,10 +88,9 @@ export default function OrderDetailPage({ params }: PageProps) {
                 </CardContent>
               </Card>
 
-              {/* Products & Codes */}
-              <Card>
+              <Card className="animate-fade-in-scale" style={{ animationDelay: '0.1s' }}>
                 <CardHeader>
-                  <CardTitle>Vos produits</CardTitle>
+                  <CardTitle className="font-semibold">Vos produits</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {order.items.map((item, index) => (
@@ -133,10 +130,9 @@ export default function OrderDetailPage({ params }: PageProps) {
                 </CardContent>
               </Card>
 
-              {/* Instructions */}
-              <Card>
+              <Card className="animate-fade-in-scale" style={{ animationDelay: '0.2s' }}>
                 <CardHeader>
-                  <CardTitle>Comment utiliser votre code</CardTitle>
+                  <CardTitle className="font-semibold">Comment utiliser votre code</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground leading-relaxed">

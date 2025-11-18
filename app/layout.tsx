@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
-import { Playfair_Display, Inter } from 'next/font/google'
+import { Outfit, Space_Grotesk } from 'next/font/google'
 import { AuthProvider } from '@/components/auth-provider'
 import './globals.css'
 
-const playfair = Playfair_Display({ subsets: ["latin"], variable: '--font-serif' });
-const inter = Inter({ subsets: ["latin"], variable: '--font-sans' });
+const outfit = Outfit({ subsets: ["latin"], variable: '--font-sans' });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: '--font-mono' });
 
 export const metadata: Metadata = {
   title: 'Digital Play - Votre boutique de produits numériques',
@@ -36,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
+      <body className={`${outfit.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
         <AuthProvider>
           {children}
         </AuthProvider>

@@ -12,6 +12,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { getCart, getCartTotal, clearCart, CartItem } from '@/lib/cart';
 import { formatPrice } from '@/lib/format';
 import { useAuth } from '@/components/auth-provider';
+import { createOrder } from '@/lib/orders';
 import { CreditCard, Smartphone, Building } from 'lucide-react';
 
 export default function CheckoutPage() {
@@ -42,17 +43,54 @@ export default function CheckoutPage() {
     e.preventDefault();
     setLoading(true);
 
+    // Get form data
+    const formData = new FormData(e.target as HTMLFormElement);
+    const firstName = formData.get('firstName') as string;
+    const lastName = formData.get('lastName') as string;
+    const email = formData.get('email') as string;
+    const phone = formData.get('phone') as string;
+
+    const order = createOrder({
+      customer_name: `${firstName} ${lastName}`,
+      customer_email: email,
+      customer_phone: phone,
+      items: cart.map((item) => ({
+        product_id: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      total,
+      status: 'pending',
+      payment_method: paymentMethod,
+    });
+
+    // Send notification to admin
+    try {
+      await fetch('/api/send-notification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: order.id,
+          customerName: order.customer_name,
+          customerEmail: order.customer_email,
+          customerPhone: order.customer_phone,
+          total: order.total,
+          items: order.items,
+        }),
+      });
+    } catch (error) {
+      console.error('[v0] Failed to send notification:', error);
+    }
+
     // Simulate payment processing
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // Create mock order
-    const orderId = Math.random().toString(36).substring(7);
     
     // Clear cart
     clearCart();
     
     // Redirect to success page
-    router.push(`/orders/${orderId}`);
+    router.push(`/orders/${order.id}`);
   };
 
   if (!user || cart.length === 0) {
@@ -64,23 +102,21 @@ export default function CheckoutPage() {
       <Header />
       
       <main className="flex-1">
-        <div className="border-b border-border bg-muted/30">
-          <div className="container py-8">
-            <h1 className="font-serif text-4xl font-bold mb-2">Paiement</h1>
-            <p className="text-muted-foreground">
+        <div className="bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 border-b animate-fade-in">
+          <div className="container mx-auto py-12 md:py-16 px-4">
+            <h1 className="font-serif text-4xl md:text-6xl font-bold mb-3 animate-slide-up">Paiement</h1>
+            <p className="text-xl text-muted-foreground animate-slide-up" style={{ animationDelay: '0.1s' }}>
               Finalisez votre commande
             </p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="container py-8">
+        <form onSubmit={handleSubmit} className="container mx-auto py-12 md:py-16 px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Payment Form */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Contact Information */}
-              <Card>
+              <Card className="animate-fade-in-scale">
                 <CardHeader>
-                  <CardTitle>Informations de contact</CardTitle>
+                  <CardTitle className="font-semibold">Informations de contact</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -104,14 +140,13 @@ export default function CheckoutPage() {
                 </CardContent>
               </Card>
 
-              {/* Payment Method */}
-              <Card>
+              <Card className="animate-fade-in-scale" style={{ animationDelay: '0.1s' }}>
                 <CardHeader>
-                  <CardTitle>Mode de paiement</CardTitle>
+                  <CardTitle className="font-semibold">Mode de paiement</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
-                    <div className="flex items-center space-x-3 rounded-lg border border-border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center space-x-3 rounded-lg border border-border p-4 cursor-pointer hover:bg-muted/50 transition-all hover:shadow-md">
                       <RadioGroupItem value="card" id="card" />
                       <Label htmlFor="card" className="flex items-center gap-3 cursor-pointer flex-1">
                         <CreditCard className="h-5 w-5 text-muted-foreground" />
@@ -121,7 +156,7 @@ export default function CheckoutPage() {
                         </div>
                       </Label>
                     </div>
-                    <div className="flex items-center space-x-3 rounded-lg border border-border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center space-x-3 rounded-lg border border-border p-4 cursor-pointer hover:bg-muted/50 transition-all hover:shadow-md">
                       <RadioGroupItem value="mobile" id="mobile" />
                       <Label htmlFor="mobile" className="flex items-center gap-3 cursor-pointer flex-1">
                         <Smartphone className="h-5 w-5 text-muted-foreground" />
@@ -131,7 +166,7 @@ export default function CheckoutPage() {
                         </div>
                       </Label>
                     </div>
-                    <div className="flex items-center space-x-3 rounded-lg border border-border p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center space-x-3 rounded-lg border border-border p-4 cursor-pointer hover:bg-muted/50 transition-all hover:shadow-md">
                       <RadioGroupItem value="bank" id="bank" />
                       <Label htmlFor="bank" className="flex items-center gap-3 cursor-pointer flex-1">
                         <Building className="h-5 w-5 text-muted-foreground" />

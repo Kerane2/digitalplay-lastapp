@@ -1,6 +1,7 @@
 'use client';
 
 import { notFound } from 'next/navigation';
+import { useState } from 'react';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,7 @@ import { mockProducts, Product } from '@/lib/mock-data';
 import { formatPrice } from '@/lib/format';
 import { addToCart } from '@/lib/cart';
 import { useToast } from '@/hooks/use-toast';
-import { ShoppingCart, Package, Globe, Monitor } from 'lucide-react';
+import { ShoppingCart, Package, Globe, Monitor, Play } from 'lucide-react';
 import { ProductCard } from '@/components/product-card';
 
 interface PageProps {
@@ -20,6 +21,7 @@ interface PageProps {
 export default function ProductPage({ params }: PageProps) {
   const { slug } = params;
   const { toast } = useToast();
+  const [showVideo, setShowVideo] = useState(false);
   
   const product = mockProducts.find((p) => p.slug === slug);
 
@@ -44,21 +46,68 @@ export default function ProductPage({ params }: PageProps) {
       <Header />
       
       <main className="flex-1">
-        <div className="container py-8">
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-16">
-            {/* Product Image */}
-            <div className="aspect-[4/3] overflow-hidden rounded-lg bg-muted">
-              <img
-                src={product.image_url || "/placeholder.svg"}
-                alt={product.name}
-                className="h-full w-full object-cover"
-              />
+            <div className="animate-fade-in-scale">
+              <div className="aspect-[4/3] overflow-hidden rounded-lg bg-muted relative group">
+                {product.video_url && !showVideo && (
+                  <button
+                    onClick={() => setShowVideo(true)}
+                    className="absolute inset-0 z-10 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  >
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-xl hover:scale-110 transition-transform">
+                      <Play className="h-8 w-8 text-primary ml-1" />
+                    </div>
+                  </button>
+                )}
+                
+                {showVideo && product.video_url ? (
+                  <video
+                    src={product.video_url}
+                    controls
+                    autoPlay
+                    loop
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <img
+                    src={product.image_url || "/placeholder.svg"}
+                    alt={product.name}
+                    className="h-full w-full object-cover"
+                  />
+                )}
+              </div>
+              
+              {product.video_url && (
+                <div className="flex gap-2 mt-4">
+                  <button
+                    onClick={() => setShowVideo(false)}
+                    className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      !showVideo
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                    }`}
+                  >
+                    Image
+                  </button>
+                  <button
+                    onClick={() => setShowVideo(true)}
+                    className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      showVideo
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                    }`}
+                  >
+                    Vidéo
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Product Info */}
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 animate-slide-in-up">
               <div>
-                <h1 className="font-serif text-4xl font-bold mb-4 text-balance">
+                <h1 className="text-4xl font-bold mb-4 text-balance">
                   {product.name}
                 </h1>
                 <div className="flex flex-wrap gap-2 mb-4">
@@ -95,7 +144,7 @@ export default function ProductPage({ params }: PageProps) {
                 </p>
               </div>
 
-              <Card>
+              <Card className="animate-fade-in-scale stagger-1">
                 <CardContent className="p-6">
                   <h3 className="font-semibold mb-3">Description</h3>
                   <p className="text-muted-foreground leading-relaxed">
@@ -108,13 +157,13 @@ export default function ProductPage({ params }: PageProps) {
                 size="lg"
                 onClick={() => handleAddToCart(product)}
                 disabled={product.stock === 0}
-                className="gap-2"
+                className="gap-2 hover:scale-105 transition-all animate-fade-in-scale stagger-2"
               >
                 <ShoppingCart className="h-5 w-5" />
                 Ajouter au panier
               </Button>
 
-              <Card className="bg-muted/50">
+              <Card className="bg-muted/50 animate-fade-in-scale stagger-3">
                 <CardContent className="p-6">
                   <h3 className="font-semibold mb-3">Informations de livraison</h3>
                   <ul className="space-y-2 text-sm text-muted-foreground">
@@ -131,16 +180,17 @@ export default function ProductPage({ params }: PageProps) {
           {/* Related Products */}
           {relatedProducts.length > 0 && (
             <div>
-              <h2 className="font-serif text-3xl font-bold mb-6">
+              <h2 className="text-3xl font-bold mb-6">
                 Produits similaires
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {relatedProducts.map((relatedProduct) => (
-                  <ProductCard
-                    key={relatedProduct.id}
-                    product={relatedProduct}
-                    onAddToCart={handleAddToCart}
-                  />
+                {relatedProducts.map((relatedProduct, idx) => (
+                  <div key={relatedProduct.id} className={`animate-fade-in-scale stagger-${Math.min(idx + 1, 6)}`}>
+                    <ProductCard
+                      product={relatedProduct}
+                      onAddToCart={handleAddToCart}
+                    />
+                  </div>
                 ))}
               </div>
             </div>

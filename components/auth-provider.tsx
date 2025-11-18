@@ -18,10 +18,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load user from localStorage on mount
-    setUser(getCurrentUser());
+    // Get user from localStorage
+    const localUser = getCurrentUser();
+    setUser(localUser);
     setLoading(false);
+  }, []);
 
+  useEffect(() => {
     // Listen for auth changes
     const handleAuthChange = () => {
       setUser(getCurrentUser());
