@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { ProductModal } from '@/components/product-modal';
 import { useAuth } from '@/components/auth-provider';
 import { isAdmin } from '@/lib/auth';
-import { mockProducts } from '@/lib/mock-data';
+import { getProducts, deleteProduct, Product } from '@/lib/api-client';
 import { formatPrice } from '@/lib/format';
 import { Search, Edit, Trash2, Plus } from 'lucide-react';
 
@@ -20,7 +20,9 @@ export default function AdminProductsPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) {
@@ -29,14 +31,28 @@ export default function AdminProductsPage() {
     }
     if (!isAdmin(user)) {
       router.push('/');
+      return;
     }
+
+    loadProducts();
   }, [user, router]);
+
+  async function loadProducts() {
+    try {
+      const data = await getProducts();
+      setProducts(data);
+    } catch (error) {
+      console.error('[v0] Failed to load products:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   if (!user || !isAdmin(user)) {
     return null;
   }
 
-  const filteredProducts = mockProducts.filter((product) =>
+  const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -45,22 +61,44 @@ export default function AdminProductsPage() {
     setIsModalOpen(true);
   };
 
-  const handleEdit = (product: any) => {
+  const handleEdit = (product: Product) => {
     setEditingProduct(product);
     setIsModalOpen(true);
   };
 
-  const handleDelete = (productId: string) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-      console.log('[v0] Deleting product:', productId);
-      alert('Produit supprimé (fonctionnalité mock)');
+  const handleDelete = async (productId: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) return;
+
+    try {
+      await deleteProduct(productId);
+      alert('Produit supprimé avec succès');
+      loadProducts(); // Reload products
+    } catch (error) {
+      console.error('[v0] Failed to delete product:', error);
+      alert('Erreur lors de la suppression du produit');
     }
   };
 
-  const handleSave = (product: any) => {
-    console.log('[v0] Saving product:', product);
-    alert(editingProduct ? 'Produit modifié (fonctionnalité mock)' : 'Produit créé (fonctionnalité mock)');
+  const handleSave = async () => {
+    // Reload products after save
+    await loadProducts();
+    setIsModalOpen(false);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+            <p className="mt-4 text-muted-foreground">Chargement...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">

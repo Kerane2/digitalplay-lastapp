@@ -43,7 +43,7 @@ export default function RegisterPage() {
 
     setLoading(true);
 
-    const result = register(email, password, fullName);
+    const result = await register(email, password, fullName);
     
     if (result.success) {
       router.push('/');

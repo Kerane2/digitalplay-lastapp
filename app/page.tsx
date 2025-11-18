@@ -7,17 +7,31 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { CategoryCard } from '@/components/category-card';
 import { ProductCard } from '@/components/product-card';
-import { getAllCategories, getAllProducts, initializeData } from '@/lib/products-manager';
+import { getCategories, getProducts, Product, Category } from '@/lib/api-client';
 import { ArrowRight, Shield, Zap, Headphones, Star } from 'lucide-react';
 
 export default function HomePage() {
-  const [categories, setCategories] = useState(getAllCategories());
-  const [products, setProducts] = useState(getAllProducts());
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    initializeData();
-    setCategories(getAllCategories());
-    setProducts(getAllProducts());
+    async function loadData() {
+      try {
+        const [categoriesData, productsData] = await Promise.all([
+          getCategories(),
+          getProducts({ featured: true })
+        ]);
+        setCategories(categoriesData);
+        setProducts(productsData);
+      } catch (error) {
+        console.error('[v0] Failed to load data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadData();
   }, []);
 
   const popularProducts = categories.map((category) => {
@@ -99,63 +113,74 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="py-12 md:py-16 lg:py-24 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-8 md:mb-12 max-w-2xl mx-auto px-4">
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-balance">
-                Produits populaires
-              </h2>
-              <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-                Nos meilleures ventes, sélectionnées rien que pour vous
-              </p>
+        {loading ? (
+          <section className="py-12 md:py-16 lg:py-24 bg-white">
+            <div className="container mx-auto px-4 text-center">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+              <p className="mt-4 text-muted-foreground">Chargement...</p>
             </div>
-            <div className="md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4">
-              <div className="flex gap-4 px-4 pb-4">
-                {popularProducts.map((product, idx) => product && (
-                  <div key={product.id} className="min-w-[85vw] sm:min-w-[320px] snap-center">
-                    <ProductCard product={product} />
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-              {popularProducts.map((product, idx) => product && (
-                <div key={product.id} className={`animate-fade-in-scale stagger-${idx + 1}`}>
-                  <ProductCard product={product} />
+          </section>
+        ) : (
+          <>
+            <section className="py-12 md:py-16 lg:py-24 bg-white">
+              <div className="container mx-auto px-4">
+                <div className="text-center mb-8 md:mb-12 max-w-2xl mx-auto px-4">
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-balance">
+                    Produits populaires
+                  </h2>
+                  <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
+                    Nos meilleures ventes, sélectionnées rien que pour vous
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
+                <div className="md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4">
+                  <div className="flex gap-4 px-4 pb-4">
+                    {popularProducts.map((product, idx) => product && (
+                      <div key={product.id} className="min-w-[85vw] sm:min-w-[320px] snap-center">
+                        <ProductCard product={product} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                  {popularProducts.map((product, idx) => product && (
+                    <div key={product.id} className={`animate-fade-in-scale stagger-${idx + 1}`}>
+                      <ProductCard product={product} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
 
-        <section className="py-12 md:py-16 lg:py-24 bg-secondary/30">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-8 md:mb-12 max-w-2xl mx-auto px-4">
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-balance">
-                Explorez nos catégories
-              </h2>
-              <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-                Trouvez exactement ce que vous cherchez parmi notre sélection
-              </p>
-            </div>
-            <div className="md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4">
-              <div className="flex gap-4 px-4 pb-4">
-                {categories.map((category) => (
-                  <div key={category.id} className="min-w-[85vw] sm:min-w-[320px] snap-center">
-                    <CategoryCard category={category} />
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-6xl mx-auto">
-              {categories.map((category, idx) => (
-                <div key={category.id} className={`animate-fade-in-scale stagger-${idx + 1}`}>
-                  <CategoryCard category={category} />
+            <section className="py-12 md:py-16 lg:py-24 bg-secondary/30">
+              <div className="container mx-auto px-4">
+                <div className="text-center mb-8 md:mb-12 max-w-2xl mx-auto px-4">
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-balance">
+                    Explorez nos catégories
+                  </h2>
+                  <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
+                    Trouvez exactement ce que vous cherchez parmi notre sélection
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
+                <div className="md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4">
+                  <div className="flex gap-4 px-4 pb-4">
+                    {categories.map((category) => (
+                      <div key={category.id} className="min-w-[85vw] sm:min-w-[320px] snap-center">
+                        <CategoryCard category={category} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-6xl mx-auto">
+                  {categories.map((category, idx) => (
+                    <div key={category.id} className={`animate-fade-in-scale stagger-${idx + 1}`}>
+                      <CategoryCard category={category} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        )}
       </main>
 
       <Footer />

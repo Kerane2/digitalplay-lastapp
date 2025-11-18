@@ -12,7 +12,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { getCart, getCartTotal, clearCart, CartItem } from '@/lib/cart';
 import { formatPrice } from '@/lib/format';
 import { useAuth } from '@/components/auth-provider';
-import { createOrder } from '@/lib/orders';
+import { createOrder } from '@/lib/api-client';
 import { CreditCard, Smartphone, Building } from 'lucide-react';
 
 export default function CheckoutPage() {
@@ -41,56 +41,32 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+    
     setLoading(true);
 
-    // Get form data
-    const formData = new FormData(e.target as HTMLFormElement);
-    const firstName = formData.get('firstName') as string;
-    const lastName = formData.get('lastName') as string;
-    const email = formData.get('email') as string;
-    const phone = formData.get('phone') as string;
-
-    const order = createOrder({
-      customer_name: `${firstName} ${lastName}`,
-      customer_email: email,
-      customer_phone: phone,
-      items: cart.map((item) => ({
-        product_id: item.id,
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-      })),
-      total,
-      status: 'pending',
-      payment_method: paymentMethod,
-    });
-
-    // Send notification to admin
     try {
-      await fetch('/api/send-notification', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orderId: order.id,
-          customerName: order.customer_name,
-          customerEmail: order.customer_email,
-          customerPhone: order.customer_phone,
-          total: order.total,
-          items: order.items,
-        }),
+      const order = await createOrder({
+        userId: user.id,
+        items: cart.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        total,
+        paymentMethod,
       });
-    } catch (error) {
-      console.error('[v0] Failed to send notification:', error);
-    }
 
-    // Simulate payment processing
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    
-    // Clear cart
-    clearCart();
-    
-    // Redirect to success page
-    router.push(`/orders/${order.id}`);
+      // Clear cart after successful order
+      clearCart();
+      
+      // Redirect to order success page
+      router.push(`/orders/${order.id}`);
+    } catch (error) {
+      console.error('[v0] Checkout error:', error);
+      alert('Erreur lors de la création de la commande');
+      setLoading(false);
+    }
   };
 
   if (!user || cart.length === 0) {

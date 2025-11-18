@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { User, getCurrentUser } from '@/lib/auth';
+import { User, getCurrentUser, fetchCurrentUser } from '@/lib/auth';
 
 interface AuthContextType {
   user: User | null;
@@ -18,10 +18,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get user from localStorage
-    const localUser = getCurrentUser();
-    setUser(localUser);
-    setLoading(false);
+    async function loadUser() {
+      const localUser = getCurrentUser();
+      if (localUser) {
+        // Verify with backend
+        const apiUser = await fetchCurrentUser();
+        setUser(apiUser);
+      }
+      setLoading(false);
+    }
+
+    loadUser();
   }, []);
 
   useEffect(() => {
