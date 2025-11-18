@@ -1,0 +1,65 @@
+'use client';
+
+import { Product } from './mock-data';
+
+export interface CartItem extends Product {
+  quantity: number;
+}
+
+// Client-side cart management using localStorage
+export function getCart(): CartItem[] {
+  if (typeof window === 'undefined') return [];
+  const cart = localStorage.getItem('cart');
+  return cart ? JSON.parse(cart) : [];
+}
+
+export function addToCart(product: Product, quantity: number = 1) {
+  const cart = getCart();
+  const existingItem = cart.find((item) => item.id === product.id);
+
+  if (existingItem) {
+    existingItem.quantity += quantity;
+  } else {
+    cart.push({ ...product, quantity });
+  }
+
+  localStorage.setItem('cart', JSON.stringify(cart));
+  window.dispatchEvent(new Event('cart-updated'));
+}
+
+export function removeFromCart(productId: string) {
+  const cart = getCart();
+  const updatedCart = cart.filter((item) => item.id !== productId);
+  localStorage.setItem('cart', JSON.stringify(updatedCart));
+  window.dispatchEvent(new Event('cart-updated'));
+}
+
+export function updateCartQuantity(productId: string, quantity: number) {
+  const cart = getCart();
+  const item = cart.find((item) => item.id === productId);
+  
+  if (item) {
+    if (quantity <= 0) {
+      removeFromCart(productId);
+    } else {
+      item.quantity = quantity;
+      localStorage.setItem('cart', JSON.stringify(cart));
+      window.dispatchEvent(new Event('cart-updated'));
+    }
+  }
+}
+
+export function clearCart() {
+  localStorage.removeItem('cart');
+  window.dispatchEvent(new Event('cart-updated'));
+}
+
+export function getCartTotal(): number {
+  const cart = getCart();
+  return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+}
+
+export function getCartCount(): number {
+  const cart = getCart();
+  return cart.reduce((count, item) => count + item.quantity, 0);
+}
