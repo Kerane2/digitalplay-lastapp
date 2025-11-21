@@ -1,72 +1,37 @@
 import { mockProducts, mockCategories, Product, Category } from './mock-data';
+import { apiClient } from './api-client';
 
 const PRODUCTS_KEY = 'digitalplay_products';
 const CATEGORIES_KEY = 'digitalplay_categories';
 
 // Initialize localStorage with mock data if empty
 export function initializeData() {
-  if (typeof window === 'undefined') return;
-  
-  if (!localStorage.getItem(PRODUCTS_KEY)) {
-    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(mockProducts));
-  }
-  if (!localStorage.getItem(CATEGORIES_KEY)) {
-    localStorage.setItem(CATEGORIES_KEY, JSON.stringify(mockCategories));
-  }
+  // Data is now managed by Supabase, no initialization needed
 }
 
-export function getAllProducts(): Product[] {
-  if (typeof window === 'undefined') return mockProducts;
-  const stored = localStorage.getItem(PRODUCTS_KEY);
-  return stored ? JSON.parse(stored) : mockProducts;
-}
+// Deprecated: Use apiClient.getProducts() instead
+export const getAllProducts = apiClient.getProducts;
+export const getProducts = apiClient.getProducts;
 
-export const getProducts = getAllProducts;
+// Deprecated: Use apiClient.getCategories() instead
+export const getAllCategories = apiClient.getCategories;
 
-export function getAllCategories(): Category[] {
-  if (typeof window === 'undefined') return mockCategories;
-  const stored = localStorage.getItem(CATEGORIES_KEY);
-  return stored ? JSON.parse(stored) : mockCategories;
-}
+// Deprecated: Use apiClient.createProduct() instead
+export const addProduct = apiClient.createProduct;
 
-export function addProduct(product: Product) {
-  const products = getAllProducts();
-  products.push(product);
-  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
-}
+// Deprecated: Use apiClient.updateProduct() instead
+export const updateProduct = apiClient.updateProduct;
 
-export function updateProduct(id: string, updates: Partial<Product>) {
-  const products = getAllProducts();
-  const index = products.findIndex((p) => p.id === id);
-  if (index !== -1) {
-    products[index] = { ...products[index], ...updates };
-    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
-  }
-}
+// Deprecated: Use apiClient.deleteProduct() instead
+export const deleteProduct = apiClient.deleteProduct;
 
-export function deleteProduct(id: string) {
-  const products = getAllProducts();
-  const filtered = products.filter((p) => p.id !== id);
-  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(filtered));
-}
+// Deprecated: Use apiClient.createCategory() instead
+export const addCategory = apiClient.createCategory;
 
-export function addCategory(category: Category) {
-  const categories = getAllCategories();
-  categories.push(category);
-  localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
-}
+// Deprecated: Use apiClient.updateCategory() instead
+export const updateCategory = apiClient.updateCategory;
 
-export function updateCategory(id: string, updates: Partial<Category>) {
-  const categories = getAllCategories();
-  const index = categories.findIndex((c) => c.id === id);
-  if (index !== -1) {
-    categories[index] = { ...categories[index], ...updates };
-    localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
-  }
-}
+// Deprecated: Use apiClient.deleteCategory() instead
+export const deleteCategory = apiClient.deleteCategory;
 
-export function deleteCategory(id: string) {
-  const categories = getAllCategories();
-  const filtered = categories.filter((c) => c.id !== id);
-  localStorage.setItem(CATEGORIES_KEY, JSON.stringify(filtered));
-}
+export type { Product, Category };

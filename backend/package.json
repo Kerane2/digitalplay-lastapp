@@ -4,9 +4,9 @@
   "description": "Backend API pour Digital Play",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "ts-node-dev --respawn --transpile-only -r dotenv/config src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node -r dotenv/config dist/server.js",
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {

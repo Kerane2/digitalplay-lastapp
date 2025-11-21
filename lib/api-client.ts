@@ -60,181 +60,32 @@ const getAuthHeaders = () => {
   };
 };
 
-// TODO: Remplacez cette URL par votre API backend
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
-
-// Mock data initialization
-const initMockData = () => {
-  if (typeof window === 'undefined') return;
-  
-  const mockCategories: Category[] = [
-    {
-      id: 'cat-1',
-      name: 'Abonnements',
-      slug: 'abonnements',
-      description: 'Abonnements streaming et services en ligne',
-      image_url: '/streaming-subscriptions.jpg',
-      created_at: new Date().toISOString(),
-    },
-    {
-      id: 'cat-2',
-      name: 'Cartes Cadeaux',
-      slug: 'cartes-cadeaux',
-      description: 'Cartes cadeaux pour plateformes gaming',
-      image_url: '/gift-cards-elegant.jpg',
-      created_at: new Date().toISOString(),
-    },
-    {
-      id: 'cat-3',
-      name: 'Recharges Jeux Mobile',
-      slug: 'recharges-jeux-mobile',
-      description: 'Recharges pour vos jeux mobiles préférés',
-      image_url: '/mobile-game-topups.jpg',
-      created_at: new Date().toISOString(),
-    },
-    {
-      id: 'cat-4',
-      name: 'Accessoires Gaming',
-      slug: 'accessoires-gaming',
-      description: 'Accessoires pour améliorer votre expérience gaming',
-      image_url: '/placeholder.svg?height=300&width=400',
-      created_at: new Date().toISOString(),
-    },
-  ];
-
-  const mockProducts: Product[] = [
-    {
-      id: 'prod-1',
-      category_id: 'cat-1',
-      name: 'Netflix Premium 1 Mois',
-      slug: 'netflix-premium-1-mois',
-      description: 'Profitez de Netflix Premium pendant 1 mois avec un accès illimité à tout le catalogue en Ultra HD',
-      price: 8000,
-      stock: 50,
-      platform: 'Web',
-      region: 'Global',
-      type: 'digital',
-      image_url: '/streaming-service-interface.png',
-      gallery: null,
-      is_featured: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: 'prod-2',
-      category_id: 'cat-2',
-      name: 'PlayStation Store 10€',
-      slug: 'playstation-10',
-      description: 'Carte cadeau PlayStation Store de 10€',
-      price: 7000,
-      stock: 200,
-      platform: 'PlayStation',
-      region: 'Europe',
-      type: 'digital',
-      image_url: '/gaming-console-setup.png',
-      gallery: null,
-      is_featured: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: 'prod-3',
-      category_id: 'cat-3',
-      name: 'Free Fire 1080 Diamants',
-      slug: 'free-fire-1080',
-      description: 'Rechargez votre compte Free Fire avec 1080 diamants',
-      price: 15000,
-      stock: 500,
-      platform: 'Mobile',
-      region: 'Global',
-      type: 'digital',
-      image_url: '/free-fire.jpg',
-      gallery: null,
-      is_featured: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: 'prod-4',
-      category_id: 'cat-4',
-      name: 'Manette PS5 DualSense',
-      slug: 'ps5-dualsense',
-      description: 'Manette sans fil officielle PlayStation 5',
-      price: 45000,
-      stock: 20,
-      platform: 'PlayStation 5',
-      region: 'Global',
-      type: 'physical',
-      image_url: '/dualsense-controller.png',
-      gallery: null,
-      is_featured: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-  ];
-
-  if (!localStorage.getItem('categories')) {
-    localStorage.setItem('categories', JSON.stringify(mockCategories));
-  }
-  if (!localStorage.getItem('products')) {
-    localStorage.setItem('products', JSON.stringify(mockProducts));
-  }
-};
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 // Products API
 export async function getProducts(params?: { category?: string; search?: string; featured?: boolean }): Promise<Product[]> {
-  try {
-    const queryParams = new URLSearchParams();
-    if (params?.category) queryParams.append('category', params.category);
-    if (params?.search) queryParams.append('search', params.search);
-    if (params?.featured) queryParams.append('featured', 'true');
-    
-    const response = await fetch(`${API_BASE_URL}/products?${queryParams}`, {
-      headers: getAuthHeaders(),
-    });
-    
-    if (!response.ok) throw new Error('Failed to fetch products');
-    return response.json();
-  } catch (error) {
-    // Fallback to localStorage
-    initMockData();
-    await delay(300);
-    const products: Product[] = JSON.parse(localStorage.getItem('products') || '[]');
-    
-    let filtered = products;
-    if (params?.category) {
-      filtered = filtered.filter(p => p.category_id === params.category);
-    }
-    if (params?.search) {
-      const search = params.search.toLowerCase();
-      filtered = filtered.filter(p => 
-        p.name.toLowerCase().includes(search) || 
-        p.description?.toLowerCase().includes(search)
-      );
-    }
-    if (params?.featured) {
-      filtered = filtered.filter(p => p.is_featured);
-    }
-    
-    return filtered;
-  }
+  const queryParams = new URLSearchParams();
+  if (params?.category) queryParams.append('category', params.category);
+  if (params?.search) queryParams.append('search', params.search);
+  if (params?.featured) queryParams.append('featured', 'true');
+  
+  const response = await fetch(`${API_BASE_URL}/products?${queryParams}`, {
+    headers: getAuthHeaders(),
+  });
+  
+  if (!response.ok) throw new Error('Failed to fetch products');
+  const data = await response.json();
+  return Array.isArray(data) ? data : (data.products || []);
 }
 
 export async function getProduct(id: string): Promise<Product> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
-      headers: getAuthHeaders(),
-    });
-    
-    if (!response.ok) throw new Error('Product not found');
-    return response.json();
-  } catch (error) {
-    await delay(200);
-    const products: Product[] = JSON.parse(localStorage.getItem('products') || '[]');
-    const product = products.find(p => p.id === id || p.slug === id);
-    if (!product) throw new Error('Product not found');
-    return product;
-  }
+  const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+    headers: getAuthHeaders(),
+  });
+  
+  if (!response.ok) throw new Error('Product not found');
+  const data = await response.json();
+  return data.product || data;
 }
 
 export async function createProduct(product: Partial<Product>): Promise<Product> {
@@ -270,36 +121,23 @@ export async function deleteProduct(id: string): Promise<void> {
 
 // Categories API
 export async function getCategories(): Promise<Category[]> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/categories`, {
-      headers: getAuthHeaders(),
-    });
-    
-    if (!response.ok) throw new Error('Failed to fetch categories');
-    return response.json();
-  } catch (error) {
-    // Fallback to localStorage
-    initMockData();
-    await delay(300);
-    return JSON.parse(localStorage.getItem('categories') || '[]');
-  }
+  const response = await fetch(`${API_BASE_URL}/categories`, {
+    headers: getAuthHeaders(),
+  });
+  
+  if (!response.ok) throw new Error('Failed to fetch categories');
+  const data = await response.json();
+  return Array.isArray(data) ? data : (data.categories || []);
 }
 
 export async function getCategory(id: string): Promise<Category> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
-      headers: getAuthHeaders(),
-    });
-    
-    if (!response.ok) throw new Error('Category not found');
-    return response.json();
-  } catch (error) {
-    await delay(200);
-    const categories: Category[] = JSON.parse(localStorage.getItem('categories') || '[]');
-    const category = categories.find(c => c.id === id || c.slug === id);
-    if (!category) throw new Error('Category not found');
-    return category;
-  }
+  const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
+    headers: getAuthHeaders(),
+  });
+  
+  if (!response.ok) throw new Error('Category not found');
+  const data = await response.json();
+  return data.category || data;
 }
 
 export async function createCategory(category: Partial<Category>): Promise<Category> {
@@ -387,3 +225,96 @@ export async function deleteOrder(id: string): Promise<void> {
   
   if (!response.ok) throw new Error('Failed to delete order');
 }
+
+// Cart API
+export async function getCart(): Promise<CartItem[]> {
+  const response = await fetch(`${API_BASE_URL}/cart`, {
+    headers: getAuthHeaders(),
+  });
+  
+  if (!response.ok) throw new Error('Failed to fetch cart');
+  const data = await response.json();
+  return Array.isArray(data) ? data : (data.cart || []);
+}
+
+export async function addToCart(productId: string, quantity: number = 1): Promise<CartItem> {
+  const response = await fetch(`${API_BASE_URL}/cart`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ product_id: productId, quantity }),
+  });
+  
+  if (!response.ok) throw new Error('Failed to add to cart');
+  const data = await response.json();
+  return data.cartItem || data;
+}
+
+export async function updateCartItem(id: string, quantity: number): Promise<CartItem> {
+  const response = await fetch(`${API_BASE_URL}/cart/${id}`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ quantity }),
+  });
+  
+  if (!response.ok) throw new Error('Failed to update cart item');
+  const data = await response.json();
+  return data.cartItem || data;
+}
+
+export async function removeFromCart(id: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/cart/${id}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+  
+  if (!response.ok) throw new Error('Failed to remove from cart');
+}
+
+export async function clearCart(): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/cart`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+  
+  if (!response.ok) throw new Error('Failed to clear cart');
+}
+
+export interface CartItem {
+  id: string;
+  user_id: string;
+  product_id: string;
+  quantity: number;
+  created_at: string;
+  updated_at: string;
+  products?: Product;
+}
+
+export const apiClient = {
+  // Products
+  getProducts,
+  getProduct,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  
+  // Categories
+  getCategories,
+  getCategory,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+  
+  // Orders
+  getOrders,
+  getOrder,
+  createOrder,
+  updateOrder,
+  deleteOrder,
+  
+  // Cart
+  getCart,
+  addToCart,
+  updateCartItem,
+  removeFromCart,
+  clearCart,
+};

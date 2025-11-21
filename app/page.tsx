@@ -22,10 +22,12 @@ export default function HomePage() {
           getCategories(),
           getProducts({ featured: true })
         ]);
-        setCategories(categoriesData);
-        setProducts(productsData);
+        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+        setProducts(Array.isArray(productsData) ? productsData : []);
       } catch (error) {
         console.error('[v0] Failed to load data:', error);
+        setCategories([]);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -34,10 +36,12 @@ export default function HomePage() {
     loadData();
   }, []);
 
-  const popularProducts = categories.map((category) => {
-    const categoryProducts = products.filter(p => p.category_id === category.id);
-    return categoryProducts.find(p => p.is_featured) || categoryProducts[0];
-  }).filter(Boolean);
+  const popularProducts = Array.isArray(categories) 
+    ? categories.map((category) => {
+        const categoryProducts = products.filter(p => p.category_id === category.id);
+        return categoryProducts.find(p => p.is_featured) || categoryProducts[0];
+      }).filter(Boolean)
+    : [];
 
   return (
     <div className="min-h-screen flex flex-col">

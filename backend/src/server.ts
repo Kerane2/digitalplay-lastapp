@@ -4,6 +4,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import fs from 'fs';
 
 import { initializeDatabase } from './config/database';
 import { errorHandler } from './middleware/errorHandler';
@@ -12,6 +14,7 @@ import authRoutes from './routes/auth.routes';
 import productsRoutes from './routes/products.routes';
 import categoriesRoutes from './routes/categories.routes';
 import ordersRoutes from './routes/orders.routes';
+import cartRoutes from './routes/cart.routes';
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -19,8 +22,18 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware de sécurité
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+      },
+    },
+  })
+);
 
 // CORS
 app.use(
@@ -40,8 +53,30 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// Filesystem check and debug logs for static files
+const adminPath = path.join(__dirname, '../public/admin');
+console.log('[v0] Admin path:', adminPath);
+console.log('[v0] Admin path exists:', fs.existsSync(adminPath));
+if (fs.existsSync(adminPath)) {
+  console.log('[v0] Files in admin:', fs.readdirSync(adminPath));
+}
+
+app.use('/admin', express.static(adminPath, {
+  index: 'index.html',
+  setHeaders: (res, path) => {
+    if (path.endsWith('.html')) {
+      res.setHeader('Content-Type', 'text/html');
+    }
+  }
+}));
+
+// Root route
+app.get('/', (req, res) => {
+  res.redirect('/admin');
+});
+
 // Route de santé
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Digital Play API is running' });
 });
 
@@ -50,6 +85,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/orders', ordersRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Gestionnaire d'erreurs
 app.use(errorHandler);
@@ -69,7 +105,8 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🔗 API URL: http://localhost:${PORT}`);
+      console.log(`🔗 Admin Dashboard: http://localhost:${PORT}/admin`);
+      console.log(`🔗 API URL: http://localhost:${PORT}/api`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);

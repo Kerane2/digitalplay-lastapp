@@ -2,16 +2,12 @@ import ProductDetailClient from './product-detail-client';
 import { getAllProducts } from '@/lib/products-manager';
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>; // params is now a Promise in Next.js 16
 }
 
-export async function generateStaticParams() {
-  const products = getAllProducts();
-  return products.map((product) => ({
-    slug: product.slug,
-  }));
-}
+export const dynamic = 'force-dynamic';
 
-export default function ProductPage({ params }: PageProps) {
-  return <ProductDetailClient slug={params.slug} />;
+export default async function ProductPage({ params }: PageProps) {
+  const { slug } = await params;
+  return <ProductDetailClient slug={slug} />;
 }

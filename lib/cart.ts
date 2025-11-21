@@ -1,65 +1,90 @@
 'use client';
 
-import { Product } from './mock-data';
+import { getCart as fetchCart, addToCart as addToCartAPI, updateCartItem as updateCartItemAPI, removeFromCart as removeFromCartAPI, clearCart as clearCartAPI, CartItem as APICartItem } from './api-client';
 
-export interface CartItem extends Product {
+export interface CartItem {
+  id: string;
+  name: string;
+  price: number;
   quantity: number;
+  image_url: string | null;
+  slug: string;
 }
 
-// Client-side cart management using localStorage
-export function getCart(): CartItem[] {
-  if (typeof window === 'undefined') return [];
-  const cart = localStorage.getItem('cart');
-  return cart ? JSON.parse(cart) : [];
-}
-
-export function addToCart(product: Product, quantity: number = 1) {
-  const cart = getCart();
-  const existingItem = cart.find((item) => item.id === product.id);
-
-  if (existingItem) {
-    existingItem.quantity += quantity;
-  } else {
-    cart.push({ ...product, quantity });
+// Cart event for real-time updates
+const dispatchCartUpdate = () => {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('cart-updated'));
   }
+};
 
-  localStorage.setItem('cart', JSON.stringify(cart));
-  window.dispatchEvent(new Event('cart-updated'));
+export async function getCart(): Promise<CartItem[]> {
+  try {
+    const cartItems = await fetchCart();
+    return cartItems.map(item => ({
+      id: item.id,
+      name: item.products?.name || 'Unknown Product',
+      price: item.products?.price || 0,
+      quantity: item.quantity,
+      image_url: item.products?.image_url || null,
+      slug: item.products?.slug || '',
+    }));
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    return [];
+  }
 }
 
-export function removeFromCart(productId: string) {
-  const cart = getCart();
-  const updatedCart = cart.filter((item) => item.id !== productId);
-  localStorage.setItem('cart', JSON.stringify(updatedCart));
-  window.dispatchEvent(new Event('cart-updated'));
+export async function addToCart(productId: string, quantity: number = 1): Promise<void> {
+  try {
+    await addToCartAPI(productId, quantity);
+    dispatchCartUpdate();
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    throw error;
+  }
 }
 
-export function updateCartQuantity(productId: string, quantity: number) {
-  const cart = getCart();
-  const item = cart.find((item) => item.id === productId);
-  
-  if (item) {
+export async function removeFromCart(cartItemId: string): Promise<void> {
+  try {
+    await removeFromCartAPI(cartItemId);
+    dispatchCartUpdate();
+  } catch (error) {
+    console.error('Error removing from cart:', error);
+    throw error;
+  }
+}
+
+export async function updateCartQuantity(cartItemId: string, quantity: number): Promise<void> {
+  try {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      await removeFromCart(cartItemId);
     } else {
-      item.quantity = quantity;
-      localStorage.setItem('cart', JSON.stringify(cart));
-      window.dispatchEvent(new Event('cart-updated'));
+      await updateCartItemAPI(cartItemId, quantity);
+      dispatchCartUpdate();
     }
+  } catch (error) {
+    console.error('Error updating cart quantity:', error);
+    throw error;
   }
 }
 
-export function clearCart() {
-  localStorage.removeItem('cart');
-  window.dispatchEvent(new Event('cart-updated'));
+export async function clearCart(): Promise<void> {
+  try {
+    await clearCartAPI();
+    dispatchCartUpdate();
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    throw error;
+  }
 }
 
-export function getCartTotal(): number {
-  const cart = getCart();
+export async function getCartTotal(): Promise<number> {
+  const cart = await getCart();
   return cart.reduce((total, item) => total + item.price * item.quantity, 0);
 }
 
-export function getCartCount(): number {
-  const cart = getCart();
+export async function getCartCount(): Promise<number> {
+  const cart = await getCart();
   return cart.reduce((count, item) => count + item.quantity, 0);
 }

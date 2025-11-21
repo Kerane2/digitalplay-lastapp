@@ -1,17 +1,12 @@
 import CategoryClient from './category-client';
-import { getAllCategories } from '@/lib/products-manager';
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  const categories = getAllCategories();
-  return categories.map((category) => ({
-    slug: category.slug,
-  }));
-}
+export const dynamic = 'force-dynamic';
 
-export default function CategoryPage({ params }: PageProps) {
-  return <CategoryClient slug={params.slug} />;
+export default async function CategoryPage({ params }: PageProps) {
+  const { slug } = await params;
+  return <CategoryClient slug={slug} />;
 }
